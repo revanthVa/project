@@ -22,7 +22,7 @@ def find_bar(name):
 def find_bar_top10spenders(name):
     with engine.connect() as con:
         query = sql.text(
-            " SELECT bn1.transactionID, h1.Drinkersname, bn1.totalprice FROM Billsnew bn1 JOIN Has h1 on bn1.transactionID = h1.BillstransactionID where bn1.Barsname = :name  ORDER BY bn1.totalprice desc  Limit 10;"
+            " SELECT h1.Drinkersname, bn1.totalprice FROM Billsnew bn1 JOIN Has h1 on bn1.transactionID = h1.BillstransactionID where bn1.Barsname = :name  ORDER BY bn1.totalprice desc  Limit 10;"
         )
         rs = con.execute(query, name=name)
         results = [dict(row) for row in rs]

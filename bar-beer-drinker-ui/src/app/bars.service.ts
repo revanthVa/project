@@ -9,6 +9,10 @@ export interface Bar {
   phone: string;
   state: string;
 }
+export interface topSpenderGraph {
+  Drinkersname: string;
+  totalprice: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +27,8 @@ export class BarsService {
   }
   getBar(bar: string){
     return this.http.get<Bar>('api/bar/' + bar);
+  }
+  getTopSpenderGraph(bar: string){
+    return this.http.get<topSpenderGraph[]>('api/bar/'+bar+'/top10spenders');
   }
 }
