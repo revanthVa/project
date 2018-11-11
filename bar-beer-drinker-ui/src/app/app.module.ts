@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { TableModule } from 'primeng/table';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { BarDetailsComponent } from './bar-details/bar-details.component';
+import { BeerslistComponent } from './beerslist/beerslist.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
-    BarDetailsComponent
+    BarDetailsComponent,
+    BeerslistComponent
   ],
   imports: [
     BrowserModule,
