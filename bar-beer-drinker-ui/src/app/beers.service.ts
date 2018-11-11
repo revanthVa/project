@@ -6,11 +6,11 @@ export interface Beer {
   manf: string;
 }
 export interface top10Bars{
-  name: string;
-  beersSold: number;
+  Barsname: string;
+  BeersSold: number;
 }
 export interface top10Drinkers{
-  name: string;
+  Drinkersname: string;
   amountBought: number;
 }
 

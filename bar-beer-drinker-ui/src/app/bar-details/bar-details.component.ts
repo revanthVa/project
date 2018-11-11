@@ -53,7 +53,7 @@ export class BarDetailsComponent implements OnInit {
       {
         'label' : 'Thursday',
         'value' : 'Thursday'
-      }
+      },
       {
         'label' : 'Friday',
         'value' : 'Friday'
