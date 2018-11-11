@@ -7,13 +7,15 @@ import { TableModule } from 'primeng/table';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { BarDetailsComponent } from './bar-details/bar-details.component';
 import { BeerslistComponent } from './beerslist/beerslist.component';
+import { BeerDetailsComponent } from './beer-details/beer-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
     BarDetailsComponent,
-    BeerslistComponent
+    BeerslistComponent,
+    BeerDetailsComponent
   ],
   imports: [
     BrowserModule,

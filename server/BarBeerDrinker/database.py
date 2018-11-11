@@ -55,3 +55,14 @@ def find_beer_top10Bars(name):
         for r in results:
             r['BeersSold'] = float(r['BeersSold'])
         return results
+
+def find_beer_top10Drinkers(name):
+     with engine.connect() as con:
+        query = sql.text(
+            "SELECT h1.Drinkersname, SUM(bo1.quantity) AS amountBought FROM Billsnew bn1 JOIN Bought bo1 ON bo1.BillstransactionID = bn1.transactionID JOIN Has h1 ON h1.BillstransactionID = bn1.transactionID WHERE bo1.Itemsname = :name GROUP BY h1.Drinkersname ORDER BY amountBought desc LIMIT 10;"
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['amountBought'] = int(r['amountBought'])
+        return results

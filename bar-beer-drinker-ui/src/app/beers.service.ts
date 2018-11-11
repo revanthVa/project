@@ -5,6 +5,14 @@ export interface Beer {
   name: string;
   manf: string;
 }
+export interface top10Bars{
+  name: string;
+  beersSold: number;
+}
+export interface top10Drinkers{
+  name: string;
+  amountBought: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +27,11 @@ export class BeersService {
   }
   getBeer(beer: string){
     return this.http.get<Beer>('api/beer/' + beer);
+  }
+  getTop10Bars(beer: string){
+    return this.http.get<top10Bars[]>('api/beer/'+beer+'/top10Bars')
+  }
+  getTop10Drinkers(beer: string){
+    return this.http.get<top10Drinkers[]>('api/beer/'+beer+'/top10Drinkers')
   }
 }

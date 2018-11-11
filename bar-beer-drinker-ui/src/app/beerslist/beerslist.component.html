@@ -15,7 +15,12 @@
         </ng-template>
         <ng-template pTemplate="body" let-beer>
             <tr>
-              <td>{{beer.name}}</td>
+              
+              <td>
+                <a routerLink="/beers/{{ beer.name }}">
+                  {{beer.name}}
+                </a>
+              </td>
               <td>{{beer.manf}}</td>
             </tr>
         </ng-template>
