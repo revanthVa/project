@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import  { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -8,7 +9,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { BarDetailsComponent } from './bar-details/bar-details.component';
 import { BeerslistComponent } from './beerslist/beerslist.component';
 import { BeerDetailsComponent } from './beer-details/beer-details.component';
-
+import { DropdownModule } from 'primeng/dropdown'
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,9 +20,11 @@ import { BeerDetailsComponent } from './beer-details/beer-details.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
-    TableModule
+    TableModule,
+    DropdownModule
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent]

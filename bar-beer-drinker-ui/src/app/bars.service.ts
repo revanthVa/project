@@ -13,6 +13,10 @@ export interface topSpenderGraph {
   Drinkersname: string;
   totalprice: number;
 }
+export interface topBeers{
+  Quantity: number;
+  beername: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +34,8 @@ export class BarsService {
   }
   getTopSpenderGraph(bar: string){
     return this.http.get<topSpenderGraph[]>('api/bar/'+bar+'/top10spenders');
+  }
+  getTopBeers(bar: string, day: string){
+    return this.http.get<topBeers[]>('/api/bar/'+bar+'/'+day+'/top10Beers');
   }
 }

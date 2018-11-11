@@ -53,7 +53,7 @@ export class BeerDetailsComponent implements OnInit {
   
       data.forEach(beer => {
         Barsname.push(beer.Barsname);
-        BeersSold.push(beer.BeersSold;
+        BeersSold.push(beer.BeersSold);
       });
       this.renderChart(Barsname, BeersSold);
     }

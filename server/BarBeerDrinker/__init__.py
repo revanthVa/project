@@ -84,3 +84,18 @@ def find_beer_top10Drinkers(name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+@app.route("/api/bar/<name>/<day>/top10Beers", methods=["GET"])
+def find_bar_top10Bars(name, day):
+    try:
+        if name is None:
+            raise ValueError("Bar is not specified.")
+        bar = database.find_bar_top10Beers(name, day)
+        if day is None: 
+            raise ValueError("Day is not specified.")
+        if bar is None:
+            return make_response("no bar found with given name", 404)
+        return jsonify(bar)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)

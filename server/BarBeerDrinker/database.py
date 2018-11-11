@@ -29,11 +29,30 @@ def find_bar_top10spenders(name):
         for r in results:
             r['totalprice'] = float(r['totalprice'])
         return results
+def find_bar_top10Beers(name, day):
+    with engine.connect() as con:
+        query = sql.text("""SELECT beername, sum(quantity) as Quantity
+        from (SELECT b1.name as beername, bo1.quantity as quantity
+        FROM Beers b1
+        JOIN Sells s1 ON b1.name = s1.Itemsname
+        JOIN Bought bo1 ON b1.name = bo1.Itemsname
+        JOIN Has h1 ON h1.Barsname = s1.Barsname AND bo1.BillstransactionID = h1.BillstransactionID
+        JOIN Billsnew bill ON bill.transactionID = h1.BillstransactionID AND bill.Barsname = s1.Barsname
+        WHERE s1.Barsname = :name AND bill.dayd = :day) Quantity
+        GROUP BY beername
+        ORDER by quantity DESC
+        LIMIT 10;"""
+        )
+        rs = con.execute(query, name=name, day=day)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['Quantity'] = int(r['Quantity'])
+        return results
 def get_beers():
     with engine.connect() as con:
         rs = con.execute("Select name, manf from Beers")
         return[dict(row) for row in rs]
-        
+
 def find_beer(name):
     with engine.connect() as con:
         query = sql.text(

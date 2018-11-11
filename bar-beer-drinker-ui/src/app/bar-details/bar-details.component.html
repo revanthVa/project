@@ -16,3 +16,19 @@
   <br>
   <div id = "bargraph"></div>
 </div>
+
+<div class ="container">
+  <br>
+  <div>
+    <span>teste {{ topBeers[1].beername }}</span>
+  </div>
+</div>
+
+<br>
+<br>
+
+<div>
+  <br>
+  <p-dropdown class = "float-right text-left" *ngIf="filterOptions" [options]="filterOptions"  (onChange)="sortBy($event.value)"></p-dropdown>
+  <div id = "bargraph2"></div>
+</div>
