@@ -92,7 +92,7 @@ def find_beer_timeDistribution(name):
         FROM (SELECT bn1.timet as timet
         FROM  Billsnew bn1
         JOIN Bought bo1 ON bn1.transactionID = bo1.billstransactionID
-        WHERE bo1.Itemsname = 'Busch'
+        WHERE bo1.Itemsname = :name
         ORDER BY str_to_date(bn1.timet, '%l:%i %p')) Quantity
         GROUP BY Hour
         ORDER BY str_to_date(timet, '%l:%i %p');
