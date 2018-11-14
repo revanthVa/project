@@ -66,14 +66,15 @@ export class BeerDetailsComponent implements OnInit {
     this.beerService.getTimeDistribution(this.beerName).subscribe(
       data => {
         console.log(data);
-        const Hour = [];
+        const Hours = [];
         const Quantity = [];
-    
+        var Hour = [];
+        var Hour = new Array();
         data.forEach(beer => {
           Hour.push(beer.Hour);
           Quantity.push(beer.Quantity);
         });
-        this.renderChart3(Hour, Quantity);
+        this.renderChart3(this.convertTime(Hour), Quantity);
       }
       );
     this.beerService.getTop10Drinkers(this.beerName).subscribe(
@@ -174,7 +175,7 @@ export class BeerDetailsComponent implements OnInit {
       }]
     });
   }
-  renderChart3(Hour: string[], Quantity: number[]) {
+  renderChart3(Hour: number[], Quantity: number[]) {
     Highcharts.chart('bargraph3', {
       chart: {
         type: 'column'
@@ -183,7 +184,7 @@ export class BeerDetailsComponent implements OnInit {
         text: 'Time Distribution of Sales'
       },
       xAxis: {
-        categories: ['1:00 AM', '2:00 AM', '3:00 AM', '11:00 AM', '12:00 AM', '1:00 PM','2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM', '12:00 PM' ],
+        categories: Hour,
         title: {
           text: 'Time'
         }
@@ -213,7 +214,26 @@ export class BeerDetailsComponent implements OnInit {
       }]
     });
   }
-
+  convertTime(Hour: any[]){
+    
+    var i;
+    var strHour = [];
+    var strHour = new Array();
+    if (parseInt(Hour[0]) == 0){
+      strHour[0] = "12 AM"
+    }
+    for (i = 1; i < Hour.length; i++) { 
+      if (parseInt(Hour[i]) < 12){
+        strHour[i] = Hour[i] + " AM"
+      }
+      if (parseInt(Hour[i]) == 12){
+        strHour[i] = Hour[i] + " PM"
+      }
+      if (parseInt(Hour[i]) > 12){
+        strHour[i] = Hour[i] % 12 + " PM"
+      }
+    }
+    return strHour;
+  }
+  
 }
-
-

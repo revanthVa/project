@@ -14,7 +14,7 @@ export interface top10Drinkers{
   amountBought: number;
 }
 export interface timeDistribution{
-  Hour: string;
+  Hour: number;
   Quantity: number;
 }
 
