@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Time } from '@angular/common';
 
 export interface Beer {
   name: string;
@@ -12,6 +13,9 @@ export interface top10Bars{
 export interface top10Drinkers{
   Drinkersname: string;
   amountBought: number;
+}
+export interface timeDistribution{
+  timet: Time
 }
 
 @Injectable({
@@ -29,9 +33,12 @@ export class BeersService {
     return this.http.get<Beer>('api/beer/' + beer);
   }
   getTop10Bars(beer: string){
-    return this.http.get<top10Bars[]>('api/beer/'+beer+'/top10Bars')
+    return this.http.get<top10Bars[]>('api/beer/'+beer+'/top10Bars');
   }
   getTop10Drinkers(beer: string){
-    return this.http.get<top10Drinkers[]>('api/beer/'+beer+'/top10Drinkers')
+    return this.http.get<top10Drinkers[]>('api/beer/'+beer+'/top10Drinkers');
+  }
+  getTimeDistribution(beer: string){
+    return this.http.get<timeDistribution[]>('api/beer/'+beer+'/timeDistribution');
   }
 }

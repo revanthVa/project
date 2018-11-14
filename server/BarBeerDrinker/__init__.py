@@ -99,3 +99,48 @@ def find_bar_top10Bars(name, day):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+
+@app.route("/api/beer/<name>/timeDistribution", methods=["GET"])
+def find_beer_timeDistribution(name):
+    try:
+        if name is None:
+            raise ValueError("Beer is not specified.")
+        beer = database.find_beer_timeDistribution(name)
+        if beer is None:
+            return make_response("no beer found with given name", 404)
+        return jsonify(beer)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route('/api/manf', methods=["GET"])
+def get_manf():
+    return jsonify(database.get_manf())
+
+@app.route('/api/manf/<name>/top10Regions', methods=["GET"])
+def find_manf_region_sales(name):
+    try:
+        if name is None:
+            raise ValueError("Manf is not specified.")
+        manf = database.find_manf_region_sales(name)
+        if manf is None:
+            return make_response("no manf found with given name", 404)
+        return jsonify(manf)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route('/api/manf/<name>/top10RegionsLikes', methods=["GET"])
+def find_manf_region_likes(name):
+    try:
+        if name is None:
+            raise ValueError("Manf is not specified.")
+        manf = database.find_manf_region_likes(name)
+        if manf is None:
+            return make_response("no manf found with given name", 404)
+        return jsonify(manf)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)

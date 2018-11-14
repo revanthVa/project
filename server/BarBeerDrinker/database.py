@@ -85,3 +85,56 @@ def find_beer_top10Drinkers(name):
         for r in results:
             r['amountBought'] = int(r['amountBought'])
         return results
+def find_beer_timeDistribution(name):
+    with engine.connect() as con:
+        query = sql.text("""
+        SELECT bn1.timet
+        FROM  Billsnew bn1
+        JOIN Bought bo1 ON bn1.transactionID = bo1.billstransactionID
+        WHERE bo1.Itemsname = :name
+        ORDER BY str_to_date(bn1.timet, '%l:%i %p')
+        """)
+        rs = con.execute(query, name=name)
+        return[dict(row) for row in rs]
+        
+def get_manf():
+    with engine.connect() as con:
+        rs = con.execute("Select distinct manf from Beers;")
+        return[dict(row) for row in rs]
+
+def find_manf_region_sales(name):
+    with engine.connect() as con:
+        query = sql.text("""SELECT city, state, SUM(quantity) as sold
+        FROM (SELECT beer.manf as manf, bar.city as city, bar.state as state, bo.quantity as quantity
+        FROM Beers beer
+        JOIN Sells s ON beer.name = s.Itemsname
+        JOIN Bars bar ON bar.name = s.Barsname
+        JOIN Billsnew bill ON bill.Barsname = s.Barsname
+        JOIN Bought bo ON bo.Itemsname = beer.name AND bo.BillstransactionID = bill.transactionID
+        WHERE beer.manf = :name ) sold
+        GROUP BY city
+        order by sold desc
+        LIMIT 10;"""
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['sold'] = int(r['sold'])
+        return results
+
+def find_manf_region_likes(name):
+    with engine.connect() as con:
+        query = sql.text("""SELECT drinkers.city, drinkers.state, COUNT(beers.manf) as manfLikes
+        FROM Drinkers drinkers
+        JOIN Likes likes on likes.Drinkersname = drinkers.name
+        JOIN Beers beers on beers.name = likes.Beersname
+        WHERE beers.manf = :name
+        GROUP by city
+        ORDER BY manfLikes desc
+        LIMIT 10;"""
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['manfLikes'] = int(r['manfLikes'])
+        return results

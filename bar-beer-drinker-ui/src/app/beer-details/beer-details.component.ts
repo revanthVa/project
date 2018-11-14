@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { BeersService, Beer, top10Bars, top10Drinkers } from '../beers.service';
+import { BeersService, Beer, top10Bars, top10Drinkers, timeDistribution } from '../beers.service';
 
 declare const Highcharts: any;
 
@@ -16,6 +16,7 @@ export class BeerDetailsComponent implements OnInit {
   beerDetails: Beer;
   topBars: top10Bars[];
   topDrinkers: top10Drinkers[];
+  timeDist: timeDistribution[];
 
   constructor(
     private beerService: BeersService,
@@ -44,7 +45,11 @@ export class BeerDetailsComponent implements OnInit {
         },
       )
     });
-    
+    beerService.getTimeDistribution(this.beerName).subscribe(
+      data => {
+        this.timeDist = data;
+      }
+    )
     this.beerService.getTop10Bars(this.beerName).subscribe(
     data => {
       console.log(data);
