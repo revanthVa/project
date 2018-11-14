@@ -48,6 +48,70 @@ def find_bar_top10Beers(name, day):
         for r in results:
             r['Quantity'] = int(r['Quantity'])
         return results
+def find_bar_timeDistribution(name, day):
+    with engine.connect() as con:
+        query = sql.text("""
+        SELECT HOUR(str_to_date(timet, '%l:%i %p')) as Hour, COUNT(e.timet) as Quantity
+        FROM (SELECT bn1.transactionID as transactionID, bn1.Barsname as bar, bn1.dayd, bo1.Itemsname as item, bn1.timet as timet
+        FROM  Billsnew bn1
+        JOIN Bought bo1 ON bn1.transactionID = bo1.billstransactionID
+        WHERE bn1.Barsname = :name ) as e
+        WHERE e.dayd = :day
+        GROUP BY Hour
+        ORDER BY str_to_date(timet, '%l:%i %p');
+        """)
+        rs = con.execute(query, name=name, day=day)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['Quantity'] = int(r['Quantity'])
+        return results
+
+def find_bar_timeDistributionWeek(name):
+    with engine.connect() as con:
+        query = sql.text("""
+        SELECT HOUR(str_to_date(timet, '%l:%i %p')) as Hour, COUNT(e.timet) as Quantity
+        FROM (SELECT bn1.transactionID as transactionID, bn1.Barsname as bar, bn1.dayd, bo1.Itemsname as item, bn1.timet as timet
+        FROM  Billsnew bn1
+        JOIN Bought bo1 ON bn1.transactionID = bo1.billstransactionID
+        WHERE bn1.Barsname = 'Club No Minors') as e
+        GROUP BY Hour
+        ORDER BY str_to_date(timet, '%l:%i %p');
+        """)
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['Quantity'] = int(r['Quantity'])
+        return results
+
+def find_bar_fractionInventory(name):
+    with engine.connect() as con:
+        query = sql.text("""
+        SELECT distinct ab.Dateday, round(((bc.quantity) / (ab.amount) * 100), 2) as fraction
+        FROM
+        (SELECT st1.Dateday, SUM(st1.amount) as amount
+        FROM Stocked st1
+        Where st1.Barsname = 'Club No Minors' 
+        GROUP by Dateday
+        ORDER BY FIELD(Dateday, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 
+        'FRIDAY', 'SATURDAY', 'SUNDAY')) ab,
+        (select dayd, sum(quantity) as Quantity
+        from (SELECT b1.name as beername, bo1.quantity as quantity, bill.dayd
+        FROM Beers b1
+        JOIN Sells s1 ON b1.name = s1.Itemsname
+        JOIN Bought bo1 ON b1.name = bo1.Itemsname
+        JOIN Has h1 ON h1.Barsname = s1.Barsname AND bo1.BillstransactionID = h1.BillstransactionID
+        JOIN Billsnew bill ON bill.transactionID = h1.BillstransactionID AND bill.Barsname = s1.Barsname
+        WHERE s1.Barsname = 'Club No Minors') Quantity
+        GROUP by dayd
+        ORDER BY FIELD(dayd, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 
+        'FRIDAY', 'SATURDAY', 'SUNDAY')) bc
+        WHERE bc.dayd = ab.Dateday;
+        """)
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['fraction'] = float(r['fraction'])
+        return results
 def get_beers():
     with engine.connect() as con:
         rs = con.execute("Select name, manf from Beers")

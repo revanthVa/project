@@ -17,7 +17,14 @@ export interface topBeers{
   Quantity: number;
   beername: string;
 }
-
+export interface timeDistribution{
+  Hour: string;
+  Quantity: number;
+}
+export interface fractionInventory{
+  Dateday: string;
+  fraction: number;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -37,5 +44,14 @@ export class BarsService {
   }
   getTopBeers(bar: string, day: string){
     return this.http.get<topBeers[]>('/api/bar/'+bar+'/'+day+'/top10Beers');
+  }
+  getTimeDistribution(bar: string, day: string){
+    return this.http.get<timeDistribution[]>('/api/bar/'+bar+'/'+day+'/timeDistribution')
+  }
+  getTimeDistributionWeek(bar: string){
+    return this.http.get<timeDistribution[]>('/api/bar/'+bar+'/timeDistributionWeek')
+  }
+  getInventoryFraction(bar: string){
+    return this.http.get<fractionInventory[]>('/api/bar/'+bar+'/fractionInventory')
   }
 }

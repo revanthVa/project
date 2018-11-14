@@ -144,3 +144,42 @@ def find_manf_region_likes(name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+@app.route("/api/bar/<name>/<day>/timeDistribution", methods=["GET"])
+def find_bar_timeDistribution(name, day):
+    try:
+        if name is None:
+            raise ValueError("Bar is not specified.")
+        bar = database.find_bar_timeDistribution(name, day)
+        if bar is None:
+            return make_response("no bar found with given name", 404)
+        return jsonify(bar)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route("/api/bar/<name>/timeDistributionWeek", methods=["GET"])
+def find_bar_timeDistributionWeek(name):
+    try:
+        if name is None:
+            raise ValueError("Bar is not specified.")
+        bar = database.find_bar_timeDistributionWeek(name)
+        if bar is None:
+            return make_response("no bar found with given name", 404)
+        return jsonify(bar)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route("/api/bar/<name>/fractionInventory", methods=["GET"])
+def find_bar_fractionInventory(name):
+    try:
+        if name is None:
+            raise ValueError("Bar is not specified.")
+        bar = database.find_bar_fractionInventory(name)
+        if bar is None:
+            return make_response("no bar found with given name", 404)
+        return jsonify(bar)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)

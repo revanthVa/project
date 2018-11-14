@@ -66,7 +66,6 @@ export class BeerDetailsComponent implements OnInit {
     this.beerService.getTimeDistribution(this.beerName).subscribe(
       data => {
         console.log(data);
-        const Hours = [];
         const Quantity = [];
         var Hour = [];
         var Hour = new Array();
