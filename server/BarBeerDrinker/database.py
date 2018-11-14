@@ -88,11 +88,15 @@ def find_beer_top10Drinkers(name):
 def find_beer_timeDistribution(name):
     with engine.connect() as con:
         query = sql.text("""
-        SELECT bn1.timet
+        select HOUR(str_to_date(timet, '%l:%i %p')) AS Hour, COUNT(timet) as Quantity
+        FROM (SELECT bn1.timet as timet
         FROM  Billsnew bn1
         JOIN Bought bo1 ON bn1.transactionID = bo1.billstransactionID
-        WHERE bo1.Itemsname = :name
-        ORDER BY str_to_date(bn1.timet, '%l:%i %p')
+        WHERE bo1.Itemsname = 'Busch'
+        ORDER BY str_to_date(bn1.timet, '%l:%i %p')) Quantity
+        GROUP BY Hour
+        ORDER BY str_to_date(timet, '%l:%i %p');
+
         """)
         rs = con.execute(query, name=name)
         return[dict(row) for row in rs]

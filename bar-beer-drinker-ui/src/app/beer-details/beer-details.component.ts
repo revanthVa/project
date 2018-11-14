@@ -63,7 +63,19 @@ export class BeerDetailsComponent implements OnInit {
       this.renderChart(Barsname, BeersSold);
     }
     );
-
+    this.beerService.getTimeDistribution(this.beerName).subscribe(
+      data => {
+        console.log(data);
+        const Hour = [];
+        const Quantity = [];
+    
+        data.forEach(beer => {
+          Hour.push(beer.Hour);
+          Quantity.push(beer.Quantity);
+        });
+        this.renderChart3(Hour, Quantity);
+      }
+      );
     this.beerService.getTop10Drinkers(this.beerName).subscribe(
       data => {
         console.log(data);
@@ -162,5 +174,46 @@ export class BeerDetailsComponent implements OnInit {
       }]
     });
   }
+  renderChart3(Hour: string[], Quantity: number[]) {
+    Highcharts.chart('bargraph3', {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Time Distribution of Sales'
+      },
+      xAxis: {
+        categories: ['1:00 AM', '2:00 AM', '3:00 AM', '11:00 AM', '12:00 AM', '1:00 PM','2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM', '12:00 PM' ],
+        title: {
+          text: 'Time'
+        }
+      },
+      yAxis: {
+        min: 0,
+        title: {
+          text: 'Amount Bought'
+        },
+        overflow: 'justify'
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            enabled: true
+          }
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        data: Quantity
+      }]
+    });
+  }
+
 }
+
 

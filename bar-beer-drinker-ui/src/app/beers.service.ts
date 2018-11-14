@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Time } from '@angular/common';
 
 export interface Beer {
   name: string;
@@ -15,7 +14,8 @@ export interface top10Drinkers{
   amountBought: number;
 }
 export interface timeDistribution{
-  timet: Time
+  Hour: string;
+  Quantity: number;
 }
 
 @Injectable({
