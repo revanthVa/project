@@ -11,7 +11,8 @@ import { BeerslistComponent } from './beerslist/beerslist.component';
 import { BeerDetailsComponent } from './beer-details/beer-details.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { ManfListComponent } from './manf-list/manf-list.component';
-import { ManfDetailsComponent } from './manf-details/manf-details.component'
+import { ManfDetailsComponent } from './manf-details/manf-details.component';
+import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component'
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +21,8 @@ import { ManfDetailsComponent } from './manf-details/manf-details.component'
     BeerslistComponent,
     BeerDetailsComponent,
     ManfListComponent,
-    ManfDetailsComponent
+    ManfDetailsComponent,
+    BarAnalyticsComponent
   ],
   imports: [
     BrowserModule,

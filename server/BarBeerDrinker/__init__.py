@@ -183,3 +183,20 @@ def find_bar_fractionInventory(name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+@app.route("/api/barAnalytics/<name>/<day>", methods=["GET"])
+def find_bar_analytics(name, day):
+    try:
+        if name is None:
+            raise ValueError("Bar is not specified.")
+        bar = database.find_bar_analytics(name, day)
+        if bar is None:
+            return make_response("no Bar Analytics can be found", 404)
+        return jsonify(bar)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route("/api/beersOnly", methods=["GET"])
+def beersOnly():
+    beer = database.beersOnly()
+    return jsonify(beer)

@@ -112,6 +112,27 @@ def find_bar_fractionInventory(name):
         for r in results:
             r['fraction'] = float(r['fraction'])
         return results
+
+def find_bar_analytics(name, day):
+    with engine.connect() as con:
+        query = sql.text("""
+        select bar, SUM(quantity) AS Sold
+        from (SELECT bn.dayd as dayd, beer.name as beer, bar.name as bar, bo.quantity as quantity
+        FROM Sells s
+        JOIN Bars bar ON s.Barsname = bar.name
+        JOIN Beers beer ON beer.name = s.Itemsname
+        JOIN Bought bo ON bo.Itemsname = beer.name
+        JOIN Billsnew bn ON bn.transactionID = bo.BillstransactionID AND bn.Barsname = s.Barsname
+        WHERE beer.name = :name AND bn.dayd = :day) Sold
+        group by bar
+        order by Sold desc
+        LIMIT 10;
+        """)
+        rs = con.execute(query, name=name, day=day)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['Sold'] = int(r['Sold'])
+        return results
 def get_beers():
     with engine.connect() as con:
         rs = con.execute("Select name, manf from Beers")
@@ -206,3 +227,8 @@ def find_manf_region_likes(name):
         for r in results:
             r['manfLikes'] = int(r['manfLikes'])
         return results
+
+def beersOnly():
+    with engine.connect() as con:
+        rs = con.execute("SELECT Beers.name FROM Beers")
+        return[dict(row) for row in rs]

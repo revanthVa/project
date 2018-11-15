@@ -25,6 +25,13 @@ export interface fractionInventory{
   Dateday: string;
   fraction: number;
 }
+export interface barAnalytics{
+  bar: string;
+  Sold: number;
+}
+export interface beers{
+  name: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -53,5 +60,11 @@ export class BarsService {
   }
   getInventoryFraction(bar: string){
     return this.http.get<fractionInventory[]>('/api/bar/'+bar+'/fractionInventory')
+  }
+  getBarAnalytics(beer: string, day: string){
+    return this.http.get<barAnalytics[]>('/api/barAnalytics/'+beer+'/'+day)
+  }
+  getBeersOnly(){
+    return this.http.get<beers[]>('/api/beersOnly')
   }
 }

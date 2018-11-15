@@ -6,6 +6,7 @@ import { BeerslistComponent } from './beerslist/beerslist.component';
 import { BeerDetailsComponent } from './beer-details/beer-details.component'
 import { ManfListComponent } from './manf-list/manf-list.component'
 import { ManfDetailsComponent } from './manf-details/manf-details.component'
+import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component'
 const routes: Routes = [
   {
     path: '',
@@ -41,6 +42,11 @@ const routes: Routes = [
     path: 'manfs/:manf',
     pathMatch: 'full',
     component: ManfDetailsComponent
+  },
+  {
+    path: 'barsAnalytics',
+    pathMatch: 'full',
+    component: BarAnalyticsComponent
   }
 ];
 
