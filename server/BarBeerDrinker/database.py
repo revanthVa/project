@@ -4,6 +4,51 @@ from BarBeerDrinker import config
 
 engine = create_engine(config.database_uri)
 
+def get_drinkers():
+    with engine.connect() as con:
+        rs = con.execute("SELECT name, addr, city, phone, state FROM Drinkers")
+        return[dict(row) for row in rs]
+
+def get_drinker(name):
+    with engine.connect() as con:
+        query = sql.text(
+            "Select name, addr, city, phone, state FROM Drinkers WHERE name = :name;"
+        )
+        rs = con.execute(query, name=name)
+        return[dict(row) for row in rs]
+
+def get_drinker_transacts(name):
+    with engine.connect() as con:
+        query = sql.text(
+             "SELECT h1.Drinkersname, h1.BillstransactionID, h1.Barsname, b1.timet FROM Billsnew b1 JOIN Has h1 ON b1.transactionID = h1.BillstransactionID WHERE (h1.Drinkersname = :name)  GROUP BY h1.Barsname ORDER BY str_to_date(b1.timet, '%l:%i %p') desc"
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        return results
+
+def get_drinker_topbeers(name):
+    with engine.connect() as con:
+        query = sql.text(
+             "SELECT b1.name as beername, SUM(bo1.quantity) as quantity FROM Has h1 JOIN Bought bo1 ON bo1.BillstransactionID = h1.BillstransactionID JOIN Beers b1 ON b1.name = bo1.Itemsname  WHERE h1.Drinkersname = :name GROUP BY beername ORDER BY quantity desc LIMIT 10;"
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['quantity'] = float(r['quantity'])
+        return results
+
+def get_drinker_spending(name, day):
+    with engine.connect() as con:
+        query = sql.text(
+             "SELECT distinct h.Drinkersname, b.Barsname, b.transactionID, b.timet, b.dayd, b.tip, SUM(b.totalprice) as totalprice FROM Billsnew b, Has h WHERE h.Drinkersname = :name AND b.transactionID = h.BillstransactionID AND dayd = :day GROUP BY b.Barsname ORDER BY totalprice desc;"
+        )
+        rs = con.execute(query, name=name, day=day)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['tip'] = float(r['tip'])
+            r['totalprice'] = float(r['totalprice'])
+        return results
+        
 def get_bars():
     with engine.connect() as con:
         rs = con.execute("SELECT name, license, city, phone, addr, state FROM Bars")
@@ -236,7 +281,7 @@ def beersOnly():
 def get_bartenders_from_bar(name):
     with engine.connect() as con:
         query = sql.text(
-            """SELECT w1.Bartendersname
+            """SELECT *
         FROM Works w1
         WHERE w1.Barsname = :name;"""
         )
@@ -298,3 +343,45 @@ def sql_modification(modification):
 		mod = sql.text(modification)
 		rs = con.execute(mod)
 		return dict({'rows': rs.rowcount})
+
+def find_bartender_sales(name, bartender):
+    with engine.connect() as con:
+        query = sql.text("""
+        SELECT e.Itemsname, SUM(e.quantity) as Sold, e.Itemsname, e.dayd, f.Dateday, e.timet 
+        FROM
+        (Select bo1.Itemsname, bn1.transactionID, bn1.timet, bn1.Barsname, bn1.dayd, bo1.quantity
+        FROM Beers b1
+        JOIN Bought bo1 ON bo1.Itemsname = b1.name
+        JOIN Billsnew bn1 ON bn1.transactionID = bo1.BillstransactionID
+        WHERE bn1.Barsname = :name) e,
+        (Select w1.start, w1.end, w1.Dateday
+        FROM Works w1
+        WHERE w1.Bartendersname = :bartender AND w1.Barsname = :name) f
+        WHERE e.dayd = f.Dateday AND
+        (((str_to_date(e.timet, '%l:%i %p')) >= str_to_date(f.start, '%l:%i %p') 
+        AND (str_to_date(e.timet, '%l:%i %p') <= str_to_date(f.end, '%l:%i %p')))
+        OR
+        ((str_to_date(e.timet, '%l:%i %p')) >= str_to_date(f.start, '%l:%i %p') 
+        OR (str_to_date(e.timet, '%l:%i %p') <= str_to_date(f.end, '%l:%i %p'))))
+        GROUP by e.Itemsname
+        order by Sold desc
+        LIMIT 10;"""
+        )
+        rs = con.execute(query, name=name, bartender=bartender)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['Sold'] = int(r['Sold'])
+        return results
+
+def get_bartender_shift(name):
+    with engine.connect() as con:
+        query = sql.text(
+        """SELECT Dateday, start, end
+        FROM Works
+        WHERE Bartendersname = :name;"""
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        if results is None:
+            return None
+        return results

@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 export interface Bartender {
-    Bartendersname: string;
+  Bartendersname: string;
+  Dateday: string;
+  start: string;
+  end: string;
 }
 export interface BartendersHours{
   start: string;
@@ -11,6 +14,10 @@ export interface BartendersHours{
 export interface BartendersAnalytics{
   Bartendersname: string;
   sold: number;
+}
+export interface BartenderSales{
+  Itemsname: string;
+  Sold: number;
 }
 
 @Injectable({
@@ -30,5 +37,11 @@ export class BartendersService {
   }
   getBartendersAnalytics(name: string, start: string, end: string){
     return this.http.get<BartendersAnalytics[]>('/api/bartenderAnalytics/'+name+'/'+start+'/'+end)
+  }
+  getBartenderSales(name: string, bartender: string){
+    return this.http.get<BartenderSales[]>('api/bartender/'+name+'/'+bartender+'/BartenderSales')
+  }
+  getBartenderShift(name: string){
+    return this.http.get<Bartender[]>('api/bartendershift/'+ name);
   }
 }

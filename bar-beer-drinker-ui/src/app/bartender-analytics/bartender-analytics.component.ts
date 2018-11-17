@@ -48,16 +48,14 @@ export class BartenderAnalyticsComponent implements OnInit {
         });
       }
     );
-    this.currBar = "Club No Minors";
-    this.currStart = "12:00 PM";
-    this.currEnd = "7:00 PM";
+
     bartenderService.getBartendersHours("Club No Minors").subscribe(
       data => {
         console.log(data);
         this.BartenderHours = data;
       }
     )
-    bartenderService.getBartendersHours("Club No Minors").subscribe(
+    bartenderService.getBartendersHours("sdsfdsff").subscribe(
       data => {
         this.selectStart = data.map(Bar => {
           return {
@@ -67,7 +65,7 @@ export class BartenderAnalyticsComponent implements OnInit {
         });
       }
     );
-    bartenderService.getBartendersHours("Club No Minors").subscribe(
+    bartenderService.getBartendersHours("sddsfdfs").subscribe(
       data => {
         this.selectEnd = data.map(Bar => {
           return {
@@ -80,14 +78,14 @@ export class BartenderAnalyticsComponent implements OnInit {
   }
 
   sortBars(selectedOption: string){
+    this.currStart ='';
+    this.currEnd ='';
     this.currBar = selectedOption;
     this.bartenderService.getBartendersHours(this.currBar).subscribe(
       data =>{
         this.shiftHours = data;
       }
     )
-    this.currStart = this.shiftHours[0].start;
-    this.currEnd = this.shiftHours[0].end;
     {
       this.bartenderService.getBartendersHours(this.currBar).subscribe(
         data => {
@@ -109,22 +107,13 @@ export class BartenderAnalyticsComponent implements OnInit {
           });
         }
         );
-        this.bartenderService.getBartendersAnalytics(selectedOption, this.currStart, this.currEnd).subscribe(
-          data => {
-            console.log(data);
-            const Bartendersname = [];
-            const sold = [];
-      
-            data.forEach(bars => {
-              Bartendersname.push(bars.Bartendersname);
-              sold.push(bars.sold);
-            });
-            this.renderChart(Bartendersname, sold);
-          }
-          );
+
     }
   }
   sortStart(selectedOption: string){
+    if (this.currEnd = ''){
+      return;
+    }
     this.currStart = selectedOption;
     if(selectedOption === selectedOption){
         this.bartenderService.getBartendersAnalytics(this.currBar, selectedOption, this.currEnd).subscribe(
