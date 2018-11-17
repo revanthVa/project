@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DrinkersService, Beer, Drinker} from '../drinkers.service';
+import { DrinkersService, Drinker, Beer} from '../drinkers.service';
+
 @Component({
   selector: 'app-drinkerslist',
   templateUrl: './drinkerslist.component.html',
@@ -12,24 +13,12 @@ export class DrinkerslistComponent implements OnInit {
 
   constructor(
     public DrinkerService: DrinkersService
-  ) {
-    this.getBeers();
+  ) { 
     this.getDrinkers();
   }
 
   ngOnInit() {
   }
-  getBeers() {
-    this.DrinkerService.getBeers().subscribe(
-      data => {
-        this.beers = data;
-      },
-      error => {
-        alert('Could not retrieve a list of beer');
-      }
-    )
-  }
-
   getDrinkers() {
     this.DrinkerService.getDrinkers().subscribe(
       data => {

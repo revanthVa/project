@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { DrinkersService, Beer, Drinker, top10Bars, top10Drinkers } from '../drinkers.service';
+import { DrinkersService, Drinker, TopBeers, Spending, Transacts } from '../drinkers.service';
+import {SelectItem} from 'primeng/api';
 
 declare const Highcharts: any;
 
@@ -10,16 +11,41 @@ declare const Highcharts: any;
   templateUrl: './drinker-details.component.html',
   styleUrls: ['./drinker-details.component.css']
 })
-export class DrinkerDetailsComponent implements OnInit {
 
+
+export class DrinkerDetailsComponent implements OnInit {
+  onChange(event) {
+    console.log(event.value);
+
+    this.drinkerService.getSpending(this.drinkerName, event.value).subscribe(
+      data => {
+        console.log(data);
+        const Barsname = [];
+        const total = [];
+    
+        data.forEach(beer => {
+          Barsname.push(beer.Barsname);
+          total.push(beer.totalprice);
+        });
+        this.renderChart2(Barsname, total);
+      }
+      );
+  }
   drinkerName: string;
   drinkerDetails: Drinker;
-  topBars: top10Bars[];
-  topDrinkers: top10Drinkers[];
+  transacts: Transacts[];
+
+  topBeers: TopBeers[];
+  spending: Spending[];
+
+  weeks: SelectItem[];
+  selectedWeek: "monday";
+
 
   constructor(
     private drinkerService: DrinkersService,
     private route: ActivatedRoute
+    
   ) {
     route.paramMap.subscribe((paramMap) => {
       this.drinkerName = paramMap.get('drinker');
@@ -27,80 +53,81 @@ export class DrinkerDetailsComponent implements OnInit {
       drinkerService.getDrinker(this.drinkerName).subscribe(
         data => {
           console.log(data);
+
           this.drinkerDetails = data;
-          //this.drinkerDetails.phone = data.phone;
           console.log(this.drinkerDetails);
           console.log(this.drinkerDetails.phone);
-        },
-        (error: HttpResponse<any>) => {
-          if (error.status === 404) {
-            alert('Drinker not found')
-          } else {
-            console.error(error.status + ' - ' + error.body);
-            alert('An error occured on the server. Please check the browser console.');
-          }
         }
       );
-      this.drinkerName = paramMap.get('drinker');
-      drinkerService.getTop10Bars(this.drinkerName).subscribe(
+      //this.drinkerName = paramMap.get('drinker');
+      drinkerService.getTransacts(this.drinkerName).subscribe(
         data => {
-          this.topBars = data;
+          this.transacts= data;
         },
       )
     });
     
-    this.drinkerService.getTop10Bars(this.drinkerName).subscribe(
+   this.drinkerService.getTopBeers(this.drinkerName).subscribe(
     data => {
       console.log(data);
-      const Barsname = [];
-      const BeersSold = [];
+      const BeersBought = [];
+      const Quantity = [];
   
       data.forEach(beer => {
-        Barsname.push(beer.Barsname);
-        BeersSold.push(beer.BeersSold);
+        BeersBought.push(beer.beername);
+        Quantity.push(beer.quantity);
       });
-      this.renderChart(Barsname, BeersSold);
+      this.renderChart(BeersBought, Quantity);
     }
     );
-
-    this.drinkerService.getTop10Drinkers(this.drinkerName).subscribe(
+    
+    this.drinkerService.getSpending(this.drinkerName, "sunday").subscribe(
       data => {
         console.log(data);
-        const DrinkersName = [];
-        const amountBought = [];
+        const Barsname = [];
+        const total = [];
     
         data.forEach(beer => {
-          DrinkersName.push(beer.Drinkersname);
-          amountBought.push(beer.amountBought);
+          Barsname.push(beer.Barsname);
+          total.push(beer.totalprice);
         });
-        this.renderChart2(DrinkersName, amountBought);
+        this.renderChart2(Barsname, total);
       }
       );
-  }
 
-  
+      this.weeks = [
+        {label: 'Sunday', value: 'Sunday'},
+        {label: 'Monday', value: 'Monday'},
+        {label: 'Tuesday', value: 'Tuesday'},
+        {label: 'Wednesday', value: 'Wednesday'},
+        {label: 'Thursday', value: 'Thursday'},
+        {label: 'Friday', value: 'Friday'},
+        {label: 'Saturday', value: 'Saturday'},
+    ];
+
+  }
 
   ngOnInit() {
   }
 
-  renderChart(Barsname: string[], BeersSold: number[]) {
+  renderChart(Beersname: string[], Quantity: number[]) {
     Highcharts.chart('bargraph', {
       chart: {
         type: 'column'
       },
       title: {
-        text: 'Top Selling Bars'
+        text: 'Most Ordered Beers'
       },
       xAxis: {
-        categories: Barsname,
+        categories: Beersname,
         title: {
-          text: 'Bar Name'
+          text: 'Beer Name'
         }
       },
       yAxis: {
         min: 0,
         title: {
-          text: 'Beers Sold'
+          text: 'Quantity'
         },
         overflow: 'justify'
       },
@@ -118,28 +145,28 @@ export class DrinkerDetailsComponent implements OnInit {
         enabled: false
       },
       series: [{
-        data: BeersSold
+        data: Quantity
       }]
     });
   }
-  renderChart2(DrinkersName: string[], amountBought: number[]) {
+  renderChart2(Barsname: string[], totalPrice: number[]) {
     Highcharts.chart('bargraph2', {
       chart: {
         type: 'column'
       },
       title: {
-        text: 'Top Buying Drinkers'
+        text: 'Spending'
       },
       xAxis: {
-        categories: DrinkersName,
+        categories: Barsname,
         title: {
-          text: 'Drinker Name'
+          text: 'Bar'
         }
       },
       yAxis: {
         min: 0,
         title: {
-          text: 'Amount Bought'
+          text: 'Amount Spent'
         },
         overflow: 'justify'
       },
@@ -157,7 +184,7 @@ export class DrinkerDetailsComponent implements OnInit {
         enabled: false
       },
       series: [{
-        data: amountBought
+        data: totalPrice
       }]
     });
   }

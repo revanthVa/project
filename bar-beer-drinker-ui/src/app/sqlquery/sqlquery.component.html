@@ -11,7 +11,7 @@ name="query" placeholder="Enter your SQL query here"></textarea>
 <br/>
 <input type="Submit" value="Submit" (click)="getSQLquery()">
 <br/>
-<p-table *ngIf="queryResults" [value]="queryResults">
+<p-table *ngIf="queryResults" [value]="queryResults" [columns]="cols" [paginator]="true" [rows]="20">
   <ng-template pTemplate="header">
       <tr>
           <th *ngFor="let col of columns">
