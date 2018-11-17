@@ -1,0 +1,22 @@
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+      <h1 class="display-4">{{ drinkerName }}</h1>
+      <p class="drinker-details" *ngIf="drinkerDetails"> 
+         Phone {{ drinkerDetails?.phone }}<span *ngIf="drinkerDetails.phone"></span>
+         p{{ drinkerDetails?.phone }}
+         n{{ drinkerName }}
+         a{{ drinkerDetails?.addr }}
+      </p>
+  </div>
+</div>
+
+<div>
+  <br>
+  <div id = "bargraph"></div>
+</div>
+
+<div>
+    <br>
+    <div id = "bargraph2"></div>
+  </div>

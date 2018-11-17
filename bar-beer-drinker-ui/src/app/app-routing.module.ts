@@ -11,7 +11,8 @@ import { BartenderComponent } from './bartender/bartender.component';
 import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-analytics.component';
 import { SqlqueryComponent } from './sqlquery/sqlquery.component';
 import { ModificationComponent } from './modification/modification.component';
-
+import { DrinkerslistComponent } from './drinkerslist/drinkerslist.component'
+import { DrinkerDetailsComponent } from './drinker-details/drinker-details.component';
 const routes: Routes = [
   {
     path: '',
@@ -72,6 +73,16 @@ const routes: Routes = [
     path:'modification',
     pathMatch: 'full',
     component: ModificationComponent
+  },
+  {
+    path: 'drinkers',
+    pathMatch: 'full',
+    component: DrinkerslistComponent
+  },
+  {
+    path: 'drinkers/:drinker',
+    pathMatch: 'full',
+    component: DrinkerDetailsComponent
   }
 ];
 

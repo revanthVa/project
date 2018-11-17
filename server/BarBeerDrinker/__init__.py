@@ -280,3 +280,64 @@ def get_bartender_shift(name):
         return make_response(str(e), 400)
     except Exception as e:
         return make_response(str(e), 500)
+
+@app.route('/api/drinker', methods=["GET"])
+def get_drinkers():
+    return jsonify(database.get_drinkers())
+
+@app.route("/api/drinker/<name>", methods=["GET"])
+def get_drinker(name):
+    try:
+        if name is None:
+            raise ValueError("Drinker is not specified.")
+        drinker = database.get_drinker(name)
+        if drinker is None:
+            return make_response("no beer found with given name.", 404)
+        return jsonify(drinker)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route("/api/drinker/<name>/transacts", methods=["GET"])
+def get_drinker_transacts(name):
+    try:
+        if name is None:
+            raise ValueError("Drinker is not specified.")
+        drinker = database.get_drinker_transacts(name)
+        if drinker is None:
+            return make_response("no drinker found with given name.", 404)
+        return jsonify(drinker)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route("/api/drinker/<name>/topbeers", methods=["GET"])
+def get_drinker_topbeers(name):
+    try:
+        if name is None:
+            raise ValueError("Drinker is not specified.")
+        drinker = database.get_drinker_topbeers(name)
+        if drinker is None:
+            return make_response("no drinker found with given name.", 404)
+        return jsonify(drinker)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+
+@app.route("/api/drinker/<name>/spend/<date>/", methods=["GET"])
+def get_drinker_spending(name, date):
+    try:
+        if name is None:
+            raise ValueError("Drinker is not specified.")
+        drinker = database.get_drinker_spending(name, date)
+        if drinker is None:
+            return make_response("no drinker found with given name.", 404)
+        return jsonify(drinker)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+            

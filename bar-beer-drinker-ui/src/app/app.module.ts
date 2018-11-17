@@ -20,6 +20,8 @@ import { SqlqueryComponent } from './sqlquery/sqlquery.component'
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import { DrinkerslistComponent } from './drinkerslist/drinkerslist.component';
+import { DrinkerDetailsComponent } from './drinker-details/drinker-details.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import {InputTextareaModule} from 'primeng/inputtextarea';
     BartenderComponent,
     BartenderAnalyticsComponent,
     ModificationComponent,
-    SqlqueryComponent
+    SqlqueryComponent,
+    DrinkerslistComponent,
+    DrinkerDetailsComponent
   ],
   imports: [
     BrowserModule,
