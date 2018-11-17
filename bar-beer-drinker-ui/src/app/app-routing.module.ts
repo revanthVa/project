@@ -7,6 +7,11 @@ import { BeerDetailsComponent } from './beer-details/beer-details.component'
 import { ManfListComponent } from './manf-list/manf-list.component'
 import { ManfDetailsComponent } from './manf-details/manf-details.component'
 import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component'
+import { BartenderComponent } from './bartender/bartender.component';
+import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-analytics.component';
+import { SqlqueryComponent } from './sqlquery/sqlquery.component';
+import { ModificationComponent } from './modification/modification.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -47,6 +52,26 @@ const routes: Routes = [
     path: 'barsAnalytics',
     pathMatch: 'full',
     component: BarAnalyticsComponent
+  },
+  {
+    path:'bartenders',
+    pathMatch: 'full',
+    component: BartenderComponent
+  },
+  {
+    path:'bartendersAnalytics',
+    pathMatch: 'full',
+    component: BartenderAnalyticsComponent
+  },
+  {
+    path:'sqlquery',
+    pathMatch: 'full',
+    component: SqlqueryComponent
+  },
+  {
+    path:'modification',
+    pathMatch: 'full',
+    component: ModificationComponent
   }
 ];
 

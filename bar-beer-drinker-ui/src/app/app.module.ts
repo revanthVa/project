@@ -12,7 +12,15 @@ import { BeerDetailsComponent } from './beer-details/beer-details.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { ManfListComponent } from './manf-list/manf-list.component';
 import { ManfDetailsComponent } from './manf-details/manf-details.component';
-import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component'
+import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component';
+import { BartenderComponent } from './bartender/bartender.component';
+import { BartenderAnalyticsComponent } from './bartender-analytics/bartender-analytics.component';
+import { ModificationComponent } from './modification/modification.component';
+import { SqlqueryComponent } from './sqlquery/sqlquery.component'
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +30,11 @@ import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component'
     BeerDetailsComponent,
     ManfListComponent,
     ManfDetailsComponent,
-    BarAnalyticsComponent
+    BarAnalyticsComponent,
+    BartenderComponent,
+    BartenderAnalyticsComponent,
+    ModificationComponent,
+    SqlqueryComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +42,9 @@ import { BarAnalyticsComponent } from './bar-analytics/bar-analytics.component'
     HttpClientModule,
     AppRoutingModule,
     TableModule,
-    DropdownModule
+    DropdownModule,
+    FormsModule,
+    ButtonModule
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent]

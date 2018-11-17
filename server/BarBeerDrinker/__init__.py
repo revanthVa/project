@@ -200,3 +200,59 @@ def find_bar_analytics(name, day):
 def beersOnly():
     beer = database.beersOnly()
     return jsonify(beer)
+@app.route('/api/bartender/<name>/', methods=["GET"])
+def get_bartenders_from_bar(name):
+    try:
+        if name is None:
+            raise ValueError("Bartender is not specified.")
+        bartender = database.get_bartenders_from_bar(name)
+        if bartender is None:
+            return make_response("no bartender found with given name", 404)
+        return jsonify(bartender)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route('/api/bartendersHours/<name>', methods=["GET"])
+def find_bartenders_start_end(name):
+    try:
+        if name is None:
+            raise ValueError("Bartender is not specified.")
+        bartender = database.find_bartenders_start_end(name)
+        if bartender is None:
+            return make_response("no bartender found with given name", 404)
+        return jsonify(bartender)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route('/api/bartenderAnalytics/<name>/<start>/<end>', methods=["GET"])
+def find_bartender_analytics(name, start, end):
+    try:
+        if name is None:
+            raise ValueError("Bar is not specified.")
+        bartender = database.find_bartender_analytics(name, start, end)
+        if bartender is None:
+            return make_response("no bar found with given name", 404)
+        return jsonify(bartender)
+    except ValueError as e:
+        return make_response(str(e), 400)
+    except Exception as e:
+        return make_response(str(e), 500)
+@app.route('/api/sqlquery/<query>', methods=["GET"])
+def SQLquery(query):
+	try:
+		if query is None:
+			raise ValueError("Query is not specified")
+		illegalOperations = ['create', 'insert', 'update', 'delete', 'drop', 'alter']
+		if any(word in query.lower() for word in illegalOperations):
+			raise ValueError("Query contains illegal operations")
+		result = database.SQLquery(query)
+		if result is None:
+			return make_response("Query returns nothing", 404)
+		return jsonify(result)
+	except ValueError as e:
+		return make_response(str(e), 400)
+	except Exception as e:
+		print(str(e))
+		return make_response(str(e), 500)

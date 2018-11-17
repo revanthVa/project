@@ -232,3 +232,69 @@ def beersOnly():
     with engine.connect() as con:
         rs = con.execute("SELECT Beers.name FROM Beers")
         return[dict(row) for row in rs]
+
+def get_bartenders_from_bar(name):
+    with engine.connect() as con:
+        query = sql.text(
+            """SELECT w1.Bartendersname
+        FROM Works w1
+        WHERE w1.Barsname = :name;"""
+        )
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        if results is None:
+            return None
+        return results
+
+def find_bartenders_start_end(name):
+    with engine.connect() as con:
+        query = sql.text(""" SELECT distinct w1.start, w1.end FROM Works w1 WHERE w1.Barsname = :name;""")
+        rs = con.execute(query, name=name)
+        results = [dict(row) for row in rs]
+        if results is None:
+            return None
+        return results
+
+def find_bartender_analytics(name, start, end):
+    with engine.connect() as con:
+        query = sql.text("""
+        SELECT f.Bartendersname, SUM(e.quantity) as sold
+        FROM
+        (Select bo1.Itemsname, bn1.transactionID, bn1.timet, bn1.Barsname, bn1.dayd, bo1.quantity
+        FROM Beers b1
+        JOIN Bought bo1 ON bo1.Itemsname = b1.name
+        JOIN Billsnew bn1 ON bn1.transactionID = bo1.BillstransactionID
+        WHERE bn1.Barsname = :name) e,
+        (Select w1.start, w1.end, w1.Dateday, w1.Bartendersname
+        FROM Works w1
+        WHERE w1.Barsname = :name AND w1.start = :start AND w1.end = :end) f
+        WHERE e.dayd = f.Dateday AND
+        (((str_to_date(e.timet, '%l:%i %p')) >= str_to_date(f.start, '%l:%i %p') 
+        AND (str_to_date(e.timet, '%l:%i %p') <= str_to_date(f.end, '%l:%i %p')))
+        OR
+        ((str_to_date(e.timet, '%l:%i %p')) >= str_to_date(f.start, '%l:%i %p') 
+        OR (str_to_date(e.timet, '%l:%i %p') <= str_to_date(f.end, '%l:%i %p'))))
+        GROUP by f.Bartendersname
+        ORDER BY sold desc
+        LIMIT 10;"""
+        )
+        rs = con.execute(query, name=name, start=start, end=end)
+        results = [dict(row) for row in rs]
+        for r in results:
+            r['sold'] = int(r['sold'])
+        return results
+def SQLquery(sqlquery):
+	with engine.connect() as con:
+		query = sql.text(sqlquery)
+		rs = con.execute(query)
+		results = [dict(row) for row in rs]
+		for r in results:
+			for x in r.keys():
+				r[x] = str(r[x])
+		return results
+
+def sql_modification(modification):
+	with engine.connect() as con:
+		mod = sql.text(modification)
+		rs = con.execute(mod)
+		return dict({'rows': rs.rowcount})
